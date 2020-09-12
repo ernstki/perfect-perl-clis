@@ -151,13 +151,13 @@ Perl *is* part of the Unix toolkit.
 
     * provide a `Makefile` that installs to `~/.local`
 
-    * look into something like [Environment Modules][1]
+    * look into something like [Environment Modules][4]
 
 9. Check that your dependencies are installed.
 
 10. Don't distribute bare JAR files. (Ha!)
 
-[1]: http://modules.sourceforge.net/
+[4]: http://modules.sourceforge.net/
 
 
 ## [08] What does it mean to be a "filter"?
@@ -286,7 +286,7 @@ h/t: <https://perlmaven.com/modulino-both-script-and-module>
 
 ## [14] BONUS: Stupid Bash tricks - programmable completion
 
-If you have [bash-completion][1] installed:
+If you have [bash-completion][5] installed:
 
     # bash-completion provides the '_longopt' shell function
     complete -F _longopt mycommand
@@ -303,16 +303,17 @@ Plenty more examples here:
 <https://github.com/scop/bash-completion/tree/master/completions>
 
 
-[1]: https://github.com/scop/bash-completion
+[5]: https://github.com/scop/bash-completion
 
 
 ## [FIN] Thanks!
 
 
-
 Thanks for your kind attention.
 
 
-
-All materials (incl. PDF handout) will be up shortly at
+All materials (incl. a [PDF handout][pdf]) will be up shortly at
 <https://github.com/ernstki/terrific-terminal-apps-python>
+
+
+[pdf]: https://github.com/ernstki/perfect-perl-clis/blob/master/slides.pdf
