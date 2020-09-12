@@ -239,12 +239,13 @@ You can process POD from a Perl module into a man page with `pod2man`.
 
 ## [12] ANSI colors with Term::ANSIColor
 
+    use v5.10;
     use Term::ANSIColor;
     say colored('Bold and blue', 'bold blue');
 
     # or…
     use Term::ANSIColor ':constants';
-    say BOLD, RED, "OH NOES!", RESET;
+    say BOLD RED "OH NOES!", RESET;
 
 Why not ANSI all the things? You don't want ANSI escapes in your output if your
 output is getting piped to another program! So, instead…
@@ -253,7 +254,7 @@ output is getting piped to another program! So, instead…
 
     use Term::ANSIColor ':constants';
 
-    my $ERR = join '', BOLD, RED, 'ERROR', RESET;
+    my $ERR = BOLD RED 'ERROR', RESET;
     die "$ERR: Everything is broken and terrible.";
 
 (Perl::Critic will probably tell you to use IO::Interactive. It's OK.)

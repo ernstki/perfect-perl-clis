@@ -145,18 +145,19 @@ myprogram.1: myprogram
     pod2man $&lt; &gt; $@</code></pre>
 <p><strong>FIXME</strong>: Do a proper <code>Makefile.PL</code> for non-Unix OSes.</p>
 <h2 id="ansi-colors-with-termansicolor">[12] ANSI colors with Term::ANSIColor</h2>
-<pre><code>use Term::ANSIColor;
+<pre><code>use v5.10;
+use Term::ANSIColor;
 say colored(&#39;Bold and blue&#39;, &#39;bold blue&#39;);
 
 # or…
 use Term::ANSIColor &#39;:constants&#39;;
-say BOLD, RED, &quot;OH NOES!&quot;, RESET;</code></pre>
+say BOLD RED &quot;OH NOES!&quot;, RESET;</code></pre>
 <p>Why not ANSI all the things? You don’t want ANSI escapes in your output if your output is getting piped to another program! So, instead…</p>
 <pre><code>BEGIN { $ENV{ANSI_COLORS_DISABLED} = 1 unless -t STDOUT }
 
 use Term::ANSIColor &#39;:constants&#39;;
 
-my $ERR = join &#39;&#39;, BOLD, RED, &#39;ERROR&#39;, RESET;
+my $ERR = BOLD RED &#39;ERROR&#39;, RESET;
 die &quot;$ERR: Everything is broken and terrible.&quot;;</code></pre>
 <p>(Perl::Critic will probably tell you to use IO::Interactive. It’s OK.)</p>
 <p>h/t: <a href="https://github.polettix.it/ETOOBUSY/2020/08/08/term-ansicolor" class="uri">https://github.polettix.it/ETOOBUSY/2020/08/08/term-ansicolor</a></p>
