@@ -42,11 +42,11 @@ cat: $(SLIDES)
 		> $(BASENAME).md; \
 
 # make an HTML version of 'slides.md' using Pandoc
-webpage: cat $(BASENAME).md
-	pandoc -f markdown -t html -o $(BASENAME).html $<
+webpage: cat
+	pandoc -f markdown -t html -o index.html $(BASENAME).md
 
 # make a PDF version of 'slides.md' using Pandoc
-handout: cat $(SLIDES)
+handout: cat
 	@#cat $(filter-out slides/00%, $(wildcard $(SLIDES)))
 	cat $(SLIDES) \
 		| $(SED) 's/^## /\n\n&/' \

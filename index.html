@@ -1,1 +1,191 @@
-<html><head><title>It works!</title></head><body>It works!</body></html>
+<h1 id="perfect-perl-clis">Perfect Perl CLIs</h1>
+<p>Building Perl comand-line programs that are obvious and easy-to-use.</p>
+<p>10 September 2020</p>
+<p><a href="https://bit.ly/perfect-perl-clis" class="uri">https://bit.ly/perfect-perl-clis</a></p>
+<h2 id="all-on-the-same-page">[01] All on the same page?</h2>
+<ul>
+<li><p>“Unix,” the Unix philsophy, Unix “toolkit”</p></li>
+<li><p>“pipe”; “pipe-and-filter programming”</p></li>
+<li><p>experience with GetOpts::Short, or GetOpts::Long?</p></li>
+<li><p>ever written a command-line utility professionally?</p>
+<ul>
+<li>…or to scratch an itch?</li>
+</ul></li>
+</ul>
+<h2 id="unix-philosophy">[02] Unix philosophy</h2>
+<ul>
+<li><p>write programs that do one thing and do it well</p></li>
+<li><p>write programs to work together</p></li>
+<li><p>write programs to handle text streams</p>
+<ul>
+<li>because that is a universal interface</li>
+</ul></li>
+</ul>
+<p>–Doug McIlroy</p>
+<h2 id="what-does-discoverability-mean-for-clis">[03] What does “discoverability” mean for CLIs?</h2>
+<ul>
+<li><p>will it show up if I <code>man -k somekeyword</code>?</p>
+<ul>
+<li>(probably not, because <code>mkwhatis</code> only works on system paths)</li>
+</ul></li>
+<li><p>will it show up if I <code>something[Tab]</code>?</p></li>
+<li><p>does it <em>do</em> something (besides crash) if I run it w/ no options?</p></li>
+<li><p>does it have a <code>--help</code> option?</p>
+<ul>
+<li>does <strong>that</strong> guide me toward (more) help?</li>
+</ul></li>
+<li><p>does it behave like other programs I’m used to?</p></li>
+</ul>
+<h2 id="what-does-it-mean-to-be-a-unix-program">[04] What does it mean to be a “Unix program”?</h2>
+<ul>
+<li><p>Don’t try to do things that other standard Unix utils already do</p>
+<ul>
+<li><em>e.g.</em>, sorting, printing matching lines</li>
+</ul></li>
+<li><p>Use linefeed-delimited text streams as your RPC</p>
+<ul>
+<li><p>read from standard input when used in a pipe</p></li>
+<li><p>write <strong>normal</strong> (expected, requested) output to standard output</p></li>
+<li><p>write <strong>exceptional</strong> output to standard error</p></li>
+</ul></li>
+<li><p>Return zero for success, non-zero for failure</p></li>
+<li><p>Have a manual page (it’s cake with <code>pod2man</code>)</p></li>
+</ul>
+<h2 id="the-situation-for-perl">[05] The situation for Perl</h2>
+<p>Perl <em>is</em> part of the Unix toolkit.</p>
+<p><a href="https://github.com/scop/bash-completion">pod2man</a> comes with Perl and makes it easy to</p>
+<ul>
+<li><p>turn POD into a manual page</p></li>
+<li><p>so your users can <code>man yourcmd</code> just like any other</p></li>
+</ul>
+<p><a href="https://metacpan.org/pod/Getopt::Long">Getopt::Long</a> and <a href="https://metacpan.org/pod/Pod::Usage">Pod::Usage</a> make it easy to</p>
+<ul>
+<li><p>parse command line options the conventional way</p></li>
+<li><p>produce nicely-formatted, standard-looking <code>--help</code> output</p></li>
+</ul>
+<h2 id="ten-recommendations-for-user-friendly-bioinformatics-clis">[06] Ten recommendations for user-friendly (bioinformatics) CLIs</h2>
+<ol type="1">
+<li><p>Print something if no parameters are supplied.</p>
+<pre><code> # after GetOptions pulls out what it needs...
+ die &quot;ERROR: need a input filename&quot; unless @ARGV;</code></pre></li>
+<li><p>Always have a <code>-h</code> or <code>-help</code> switch.</p>
+<pre><code> # after e.g., GetOptions(&#39;help&#39; =&gt; \$help, &#39;manual&#39; =&gt; \$manual)
+ pod2usage(0)                            if $help;
+ pod2usage(-exitval =&gt; 0, -verbose =&gt; 2) if $manual;</code></pre></li>
+<li><p>Have a <code>-v</code> [sic] or <code>-version</code> switch.</p>
+<pre><code> # right inside the call to GetOptions 
+ GetOptions(&#39;version|V&#39; =&gt; sub { print &quot;$VERSION\n&quot;; exit });</code></pre></li>
+<li><p>Do not use stdout for messages and errors.</p></li>
+</ol>
+<h2 id="ten-recommendations-for-user-friendly-clis-contd">[07] Ten recommendations for user-friendly CLIs (cont’d)</h2>
+<ol start="5" type="1">
+<li><p>Always raise an error if something goes wrong (<code>or die</code>!)</p></li>
+<li><p>Validate your parameters (Getopt::Long can do this!)</p></li>
+<li><p>Don’t hard-code any paths (no “magic variables” as the boss would say)</p></li>
+<li><p>Don’t pollute the <code>PATH</code> (corrollary: install into the <code>$PATH</code>).</p>
+<ul>
+<li><p>provide a standard <code>Makefile.PL</code></p></li>
+<li><p>provide a <code>Makefile</code> that installs to <code>~/.local</code></p></li>
+<li><p>look into something like <a href="https://github.com/scop/bash-completion">Environment Modules</a></p></li>
+</ul></li>
+<li><p>Check that your dependencies are installed.</p></li>
+<li><p>Don’t distribute bare JAR files. (Ha!)</p></li>
+</ol>
+<h2 id="what-does-it-mean-to-be-a-filter">[08] What does it mean to be a “filter”?</h2>
+<p>Take the example script <code>scrubbed</code>: it reads (potentially malformed) input and writes sanitized output.</p>
+<p>It has a name (“scrub”) that suggests it behaves like a filter: reading from and writing to standard out.</p>
+<p>Some Unix toolkit programs (<code>cat</code>, <code>awk</code>, <code>grep</code>) will appear to “hang” if you forget the input filename.</p>
+<p>You can either handle this one of two ways:</p>
+<ul>
+<li><p>by requiring <code>-</code> as the input filename to read from stdin</p></li>
+<li><p>by waiting for input (forever)</p></li>
+</ul>
+<h2 id="pod-to-man-pages">[09] POD to man pages</h2>
+<p>Unix man pages are grrreat. Their lack of features is a feature.</p>
+<p>POD is basically a man page with slightly different section names from the Unix / POSIX standard. They show up in section “3pm” of the manual.</p>
+<p>You can access them with <code>man cmdname</code> or <code>perldoc cmdname</code>.</p>
+<p>You can process POD from a Perl module into a man page with <code>pod2man</code>.</p>
+<h2 id="a-minimum-viable-pod-section-for-unix-man-page">[10] A minimum-viable POD section for Unix man page</h2>
+<pre><code>=head1 NAME
+
+mycmd - Do the thing
+
+=head1 SYNOPSIS
+
+B&lt;mycmd&gt; [options] [arg1 arg2 arg3 ...] [FILE] [&lt; FILE]
+
+    Options:
+      --help      brief help message
+      ⋮
+
+=head1 OPTIONS
+
+=over 10
+
+=item B&lt;--help&gt;
+
+Prints this help message.
+⋮</code></pre>
+<h2 id="a-minimum-viable-makefile">[11] A minimum-viable Makefile</h2>
+<pre><code># Makefile for myprogram
+PREFIX ?= /usr/local  # try &#39;make install PREFIX=$HOME/.local&#39;
+
+help:
+    @echo &quot;Type &#39;make install [PREFIX=path; default /usr/local]&#39;.&quot; &gt;&amp;2
+
+install: install-bin install-man
+
+install-bin: myprogram
+    install $&lt; $(PREFIX)/bin
+
+install-man: myprogram.1
+    install -m644 $&lt; $(PREFIX)/share/man/man1
+
+myprogram.1: myprogram
+    pod2man $&lt; &gt; $@</code></pre>
+<p><strong>FIXME</strong>: Do a proper <code>Makefile.PL</code> for non-Unix OSes.</p>
+<h2 id="ansi-colors-with-termansicolor">[12] ANSI colors with Term::ANSIColor</h2>
+<pre><code>use Term::ANSIColor;
+say colored(&#39;Bold and blue&#39;, &#39;bold blue&#39;);
+
+# or…
+use Term::ANSIColor &#39;:constants&#39;;
+say BOLD, RED, &quot;OH NOES!&quot;, RESET;</code></pre>
+<p>Why not ANSI all the things? You don’t want ANSI escapes in your output if your output is getting piped to another program! So, instead…</p>
+<pre><code>BEGIN { $ENV{ANSI_COLORS_DISABLED} = 1 unless -t STDOUT }
+
+use Term::ANSIColor &#39;:constants&#39;;
+
+my $ERR = join &#39;&#39;, BOLD, RED, &#39;ERROR&#39;, RESET;
+die &quot;$ERR: Everything is broken and terrible.&quot;;</code></pre>
+<p>(Perl::Critic will probably tell you to use IO::Interactive. It’s OK.)</p>
+<p>h/t: <a href="https://github.polettix.it/ETOOBUSY/2020/08/08/term-ansicolor" class="uri">https://github.polettix.it/ETOOBUSY/2020/08/08/term-ansicolor</a></p>
+<h2 id="bonus-stupid-perl-tricks">[13] BONUS: Stupid Perl tricks</h2>
+<p>Executable Perl modules (kinda like Python <code>__main__.py</code> inside a package):</p>
+<pre><code># mymodule.pm
+package MyModule;
+use v5.10;
+
+main() if not caller();
+
+sub main  { say &quot;I say, I say.&quot;; }
+sub func1 { say &quot;This is &#39;func1&#39; doing its function thing.&quot;; }
+1;</code></pre>
+<p>Now you can run <code>MyModule.pm</code> as a command, <em>or</em> <code>use</code> its functions:</p>
+<pre><code>$ perl module.pm
+$ PERL5LIB=. perl -Mmymodule -e &#39;MyModule::func1();&#39;</code></pre>
+<p>h/t: <a href="https://perlmaven.com/modulino-both-script-and-module" class="uri">https://perlmaven.com/modulino-both-script-and-module</a></p>
+<h2 id="bonus-stupid-bash-tricks---programmable-completion">[14] BONUS: Stupid Bash tricks - programmable completion</h2>
+<p>If you have <a href="https://github.com/scop/bash-completion">bash-completion</a> installed:</p>
+<pre><code># bash-completion provides the &#39;_longopt&#39; shell function
+complete -F _longopt mycommand</code></pre>
+<p>Otherwise:</p>
+<pre><code># make your own function (put this in your ~/.bashrc)
+_mycommand() {
+      mycommand --help | perl -ne &#39;print if s/\s+(--\w+).*/$1/&#39;
+}
+complete -o default -F _mycommmand mycommand</code></pre>
+<p>Plenty more examples here: <a href="https://github.com/scop/bash-completion/tree/master/completions" class="uri">https://github.com/scop/bash-completion/tree/master/completions</a></p>
+<h2 id="fin-thanks">[FIN] Thanks!</h2>
+<p>Thanks for your kind attention.</p>
+<p>All materials (incl. PDF handout) will be up shortly at <a href="https://github.com/ernstki/terrific-terminal-apps-python" class="uri">https://github.com/ernstki/terrific-terminal-apps-python</a></p>
