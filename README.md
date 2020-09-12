@@ -75,4 +75,5 @@ See also
 [sh1]: http://heirloom.sourceforge.net/sh/sh.1.html
 [rh]: https://metacpan.org/pod/Hash::Util#Restricted-hashes
 [bcfaq]: https://github.com/scop/bash-completion#faq
+[tac]: https://metacpan.org/pod/Term::ANSIColor
 [ee]: https://metacpan.org/pod/distribution/Exporter-Extensible/lib/Exporter/Extensible.pm
