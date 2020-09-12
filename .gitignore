@@ -1,0 +1,10 @@
+.*sw?
+*~
+slides-cat.md
+slides.html
+.DS_Store
+
+# demo scripts that don't reeeallly need to be in the repo
+bin/
+lib/
+test/

@@ -1,0 +1,24 @@
+---
+title-meta: Perfect Perl Command-line Interfaces
+author-meta: Kevin Ernst
+keywords:
+    - unix
+    - perl
+    - pipes
+    - cli
+    - commmand line interface
+    - best practices
+subject: |
+    Building Perl comand-line programs that are obvious and easy-to-use.
+description: |
+    A brief review of "Unix toolkit" philosophy and "pipe-and-filter"
+    programming, followed by advice about how to provide command-line
+    applications that are easy to get started with, make obvious their
+    affordances, and provide help and support for newbie through expert users.
+
+# options for Pandoc's LaTeX/PDF output
+colorlinks: true
+geometry: margin=1.5in
+pagestyle: headings
+---
+
