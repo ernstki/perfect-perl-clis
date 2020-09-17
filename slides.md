@@ -81,7 +81,7 @@ that are obvious and easy-to-use.
 
     * _e.g._, sorting, printing matching lines
 
-* Use linefeed-delimited text streams as your RPC
+* Use linefeed-delimited text streams as your IPC/RPC
 
     * read from standard input when used in a pipe
 
@@ -145,7 +145,7 @@ Perl *is* part of the Unix toolkit.
 
 6. Validate your parameters (Getopt::Long can do this!)
 
-7. Don't hard-code any paths (no "magic variables" as the boss would say)
+7. Don't hard-code any paths (no "magic numbers" as the boss would say)
 
 8. Don't pollute the `PATH` (corrollary: install into the `$PATH`).
 
